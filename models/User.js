@@ -16,7 +16,15 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  img: {
+  avatarImg: {
+    type: String,
+    required: false,
+  },
+  bannerImg: {
+    type: String,
+    required: false,
+  },
+  chatprofileImg: {
     type: String,
     required: false,
   },
@@ -32,10 +40,33 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
-  isSeller: {
+  address: {
+    type: String,
+    required: false,
+  },
+  subscribedUsers: {
+    type: Array,
+  },
+  subscribers: {
+    type: Number,
+    default: 0,
+  },
+  videos: {
+    type: Array,
+  },
+  isArtist: {
     type: Boolean,
     default:false
   },
+  twitter: {
+    type: String,
+    required: false,
+  },
+  instagram: {
+    type: String,
+    required: false,
+  },
+
 },{
   timestamps:true
 });
