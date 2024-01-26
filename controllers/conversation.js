@@ -3,8 +3,8 @@ import Conversation from "../models/Conversation.js";
 
 export const createConversation = async (req, res, next) => {
   const newConversation = new Conversation({
-    artistId: req.isArtist ? req.userId : req.body.to,
-    fanId: req.isArtist ? req.body.to : req.userId,
+    artistId: req.body.artistId,
+    fanId: req.body.fanId,
     readByArtist: req.isArtist,
     readByFan: !req.isArtist,
   });
