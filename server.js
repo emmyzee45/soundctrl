@@ -1,15 +1,15 @@
+import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.js";
-import orderRoute from "./routes/order.js";
 import authRoute from "./routes/auth.js";
+import orderRoute from "./routes/order.js";
 import bookingRoute from "./routes/booking.js";
 import messageRoute from "./routes/message.js";
 import waitlistRoute from "./routes/waitlist.js";
 import conversationRoute from "./routes/conversation.js";
-import cookieParser from "cookie-parser";
-import cors from "cors";
 
 const app = express();
 dotenv.config();
