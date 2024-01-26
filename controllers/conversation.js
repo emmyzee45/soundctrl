@@ -3,8 +3,8 @@ import Conversation from "../models/Conversation.js";
 
 export const createConversation = async (req, res, next) => {
   const newConversation = new Conversation({
-    artistId: req.isArtist ? req.userId : req.body.to,
-    fanId: req.isArtist ? req.body.to : req.userId,
+    artistId: req.body.artistId,
+    fanId: req.body.fanId,
     readByArtist: req.isArtist,
     readByFan: !req.isArtist,
   });
@@ -20,7 +20,7 @@ export const createConversation = async (req, res, next) => {
 export const updateConversation = async (req, res, next) => {
   try {
     const updatedConversation = await Conversation.findOneAndUpdate(
-      { id: req.params.id },
+      { _id: req.params.id },
       {
         $set: {
           // readByArtist: true,
@@ -37,9 +37,19 @@ export const updateConversation = async (req, res, next) => {
   }
 };
 
+export const deleteSingleConversation = async (req, res, next) => {
+  try {
+    const conversation = await Conversation.findByIdAndDelete(req.params.id);
+    if (!conversation) return next(createError(404, "Not found!"));
+    res.status(200).send("Deleted!");
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getSingleConversation = async (req, res, next) => {
   try {
-    const conversation = await Conversation.findOne({ id: req.params.id });
+    const conversation = await Conversation.findOne({ _id: req.params.id });
     if (!conversation) return next(createError(404, "Not found!"));
     res.status(200).send(conversation);
   } catch (err) {
