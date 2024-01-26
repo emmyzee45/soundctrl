@@ -13,3 +13,21 @@ export const verifyToken = (req, res, next) => {
     next()
   });
 };
+
+export const verifyTokenAndAuthorization = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.userId === req.params.id) {
+      next();
+    } else {
+      res.status(403).json("You are not alowed to do that!");
+    }
+  });
+};
+
+
+export const verifyArtist = (req, res, next) => {
+  if(!req.isArtist) {
+    return next(createError(403, "Unauthorized"))
+  }
+  next()
+}
