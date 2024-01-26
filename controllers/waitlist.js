@@ -28,7 +28,7 @@ export const getWaitlists = async (req, res, next) => {
 export const deleteWaitlist = async (req, res, next) => {
   try {
     const waitlists = await Waitlist.findByIdAndDelete(req.params.id);
-    res.status(200).send(waitlists);
+    res.status(200).send("waitlist deleted!");
   } catch (err) {
     next(err);
   }
@@ -46,7 +46,6 @@ export const sendCode = async(req,res, next) => {
     
      // Genrate 4 digit code
      const registerCode = Math.floor(1000 + Math.random() * 9000);
-     console.log(registerCode);
     
     // Hash token and save
     const hashedToken = hashToken(registerCode);
@@ -62,7 +61,7 @@ const sent_from = process.env.EMAIL_USER;
 const reply_to = "noreply@soundctrl.net";
 const template = "registercode";
 const name = "customer";
-const code = registerCode;
+const link = registerCode;
 
 try {
   await sendEmail(
@@ -72,7 +71,7 @@ try {
     reply_to,
     template,
     name,
-    code
+    link
   );
   res.status(200).json({ message: "Register code Sent" }); 
 }catch(err) {
