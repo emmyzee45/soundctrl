@@ -5,8 +5,8 @@ import { verifyToken } from "../middleware/jwt.js";
 const router = express.Router();
 
 router.post("/", createWaitlist);
-router.delete("/:id", verifyToken, deleteWaitlist);
 router.get("/", getWaitlists);
+router.delete("/:id", verifyToken, deleteWaitlist);
 router.post("/sendcode", verifyToken, sendCode);
 router.post("/:code", confirmCode);
 

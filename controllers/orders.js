@@ -1,14 +1,12 @@
-import createError from "../utils/createError.js";
 import Order from "../models/Order.js";
-import Gig from "../models/User.js";
 import Stripe from "stripe";
+
 export const intent = async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE);
 
-  const gig = await Gig.findById(req.params.id);
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: gig.price * 100,
+    amount: req.body.price,
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,
@@ -16,12 +14,10 @@ export const intent = async (req, res, next) => {
   });
 
   const newOrder = new Order({
-    gigId: gig._id,
-    img: gig.cover,
-    title: gig.title,
+    title: req.body.title,
     buyerId: req.userId,
-    sellerId: gig.userId,
-    price: gig.price,
+    sellerId: req.body.userId,
+    price: req.body.price,
     payment_intent: paymentIntent.id,
   });
 

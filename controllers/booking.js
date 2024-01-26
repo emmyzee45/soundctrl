@@ -18,11 +18,31 @@ export const createTicket = async (req, res, next) => {
   }
 };
 
+// update tickets by artist
+export const updateTickets = async (req, res, next) => {
+  try {
+    const tickets = await Ticket.findByAndUpdate(req.params.id, req.body, {new: true});
+    res.status(200).send(tickets);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // get tickets by artist
+export const getTicketsByArtist = async (req, res, next) => {
+  try {
+    const tickets = await Ticket.find({ artistId: req.params.id });
+    res.status(200).send(tickets);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// get all tickets
 export const getTickets = async (req, res, next) => {
   try {
-    const Tickets = await Ticket.find({ artistId: req.params.id });
-    res.status(200).send(Tickets);
+    const tickets = await Ticket.find();
+    res.status(200).send(tickets);
   } catch (err) {
     next(err);
   }
@@ -31,8 +51,8 @@ export const getTickets = async (req, res, next) => {
 // delete ticket by artist
 export const deleteTicket = async (req, res, next) => {
   try {
-    const Tickets = await Ticket.findByIdAndDelete(req.params.id);
-    res.status(200).send(Tickets);
+    const tickets = await Ticket.findByIdAndDelete(req.params.id);
+    res.status(200).send(tickets);
   } catch (err) {
     next(err);
   }

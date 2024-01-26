@@ -3,11 +3,6 @@ const { Schema } = mongoose;
 
 const ConversationSchema = new Schema(
   {
-    id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     artistId: {
       type: String,
       required: true,
@@ -18,11 +13,11 @@ const ConversationSchema = new Schema(
     },
     readByArtist: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     readByFan: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     lastMessage: {
       type: String,

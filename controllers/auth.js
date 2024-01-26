@@ -96,8 +96,8 @@ const subject = "Password Reset Request - AUTH:Z";
 const send_to = user.email;
 const sent_from = process.env.EMAIL_USER;
 const reply_to = "noreply@simver.net";
-const template = "forgotPassword";
-const name = user.name;
+const template = "forgetpassword";
+const name = user. username;
 const link = loginCode;
 
 try {
@@ -122,10 +122,9 @@ export const resetPassword = async (req, res) => {
   const { password } = req.body;
 
   const hashedToken = hashToken(token);
-
+  console.log(hashedToken)
   const userToken = await Token.findOne({
     rToken: hashedToken,
-    userId: req.userId,
     expiresAt: { $gt: Date.now() },
   });
 

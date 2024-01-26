@@ -1,9 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-// import userRoute from "./routes/user.js";
-// import orderRoute from "./routes/order.js";
+import userRoute from "./routes/user.js";
+import orderRoute from "./routes/order.js";
 import authRoute from "./routes/auth.js";
+import waitlistRoute from "./routes/waitlist.js";
+import bookingRoute from "./routes/booking.js";
+import conversationRoute from "./routes/conversation.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -20,13 +23,16 @@ const connect = async () => {
   }
 };
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoute);
-// app.use("/api/users", userRoute);
-// app.use("/api/orders", orderRoute);
+app.use("/api/users", userRoute);
+app.use("/api/orders", orderRoute);
+app.use("/api/waitlist", waitlistRoute);
+app.use("/api/booking", bookingRoute);
+app.use("/api/conversation", conversationRoute);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
@@ -35,7 +41,7 @@ app.use((err, req, res, next) => {
   return res.status(errorStatus).send(errorMessage);
 });
 
-app.listen(8800, () => {
+app.listen(process.env.PORT, () => {
   connect();
   console.log("Backend server is running!");
 });

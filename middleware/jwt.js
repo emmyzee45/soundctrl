@@ -13,3 +13,11 @@ export const verifyToken = (req, res, next) => {
     next()
   });
 };
+
+
+export const verifyArtist = (req, res, next) => {
+  if(!req.isArtist) {
+    return next(createError(403, "Unauthorized"))
+  }
+  next()
+}
