@@ -14,7 +14,7 @@ export const createWaitlist = async (req, res, next) => {
   }
 };
 
-// get Waitlists by artist
+// get Waitlists
 export const getWaitlists = async (req, res, next) => {
   try {
     const waitlists = await Waitlist.find();
@@ -81,14 +81,14 @@ try {
 // send code
 export const confirmCode = async(req,res, next) => {
     const { code } = req.params;
-    const { email } = req.body;
+    // const { email } = req.body;
   
     const hashedCode = hashToken(code);
     try {
 
         const userCode = await Waitlist.findOne({
             code: hashedCode,
-            email: email,
+            // email: email,
         });
         
         if (!userCode) {
