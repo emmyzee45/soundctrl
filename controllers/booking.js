@@ -7,7 +7,6 @@ export const createTicket = async (req, res, next) => {
     time: req.body.time,
     link: req.body.link,
     price: req.body.price,
-
   });
   try {
     const savedTicket = await newTicket.save();
