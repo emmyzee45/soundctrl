@@ -14,9 +14,9 @@ export const intent = async (req, res, next) => {
   });
 
   const newOrder = new Order({
-    title: req.body.title,
+    type: req.body.type,
     buyerId: req.userId,
-    sellerId: req.body.userId,
+    sellerId: req.body.artistId,
     price: req.body.price,
     payment_intent: paymentIntent.id,
   });

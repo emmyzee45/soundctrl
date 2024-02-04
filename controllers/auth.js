@@ -79,7 +79,6 @@ if (token) {
 
  // Genrate 4 digit code
  const loginCode = Math.floor(1000 + Math.random() * 9000);
- console.log(loginCode);
 
 // Hash token and save
 const hashedToken = hashToken(loginCode);
@@ -122,7 +121,6 @@ export const resetPassword = async (req, res) => {
   const { password } = req.body;
 
   const hashedToken = hashToken(token);
-  console.log(hashedToken)
   const userToken = await Token.findOne({
     rToken: hashedToken,
     expiresAt: { $gt: Date.now() },
