@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/", createWaitlist);
 router.get("/", getWaitlists);
 router.delete("/:id", verifyToken, deleteWaitlist);
-router.post("/sendcode", verifyToken, sendCode);
+router.post("/code", verifyToken, sendCode);
 router.post("/:code", confirmCode);
 
 export default router;
