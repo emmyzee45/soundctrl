@@ -10,10 +10,31 @@ export const deleteUser = async (req, res, next) => {
   await User.findByIdAndDelete(req.params.id);
   res.status(200).send("deleted.");
 };
+
 export const getUser = async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
   res.status(200).send(user);
+};
+
+export const getAllArtist = async (req, res, next) => {
+  try {
+    const user = await User.find({isArtist: true});
+    res.status(200).send(user);
+  }catch(err) {
+    next(err)
+  }
+
+};
+
+export const getAllFans = async (req, res, next) => {
+  try {
+    const user = await User.find({isArtist: false});
+    res.status(200).send(user);
+  }catch(err) {
+    next(err)
+  }
+
 };
 
 // update user
