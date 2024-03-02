@@ -1,4 +1,4 @@
-import { createError } from "../utils/createError.js";
+import createError from "../utils/createError.js";
 import Comment from "../models/Comment.js";
 import Post from "../models/Post.js";
 
