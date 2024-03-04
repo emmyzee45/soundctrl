@@ -25,8 +25,8 @@ const connect = async () => {
     console.log(error);
   }
 };
-
-app.use(cors({ origin: "http://18.234.121.45", credentials: true }));
+// { origin: "http://18.234.121.45", credentials: true }
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
