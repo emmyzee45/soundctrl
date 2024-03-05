@@ -11,7 +11,7 @@ export const deleteUser = async (req, res, next) => {
   res.status(200).send("deleted.");
 };
 
-export const getUser = async (req, res, next) => {
+export const getSingleUser = async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
   res.status(200).send(user);
@@ -20,11 +20,12 @@ export const getUser = async (req, res, next) => {
 export const getAllArtist = async (req, res, next) => {
   try {
     const user = await User.find({isArtist: true});
-    res.status(200).send(user);
+    console.log(user)
+    res.status(200).json(user);
   }catch(err) {
+    console.log(err)
     next(err)
   }
-
 };
 
 export const getAllFans = async (req, res, next) => {
