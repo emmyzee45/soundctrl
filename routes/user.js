@@ -8,7 +8,7 @@ router.post("/:id", verifyToken, subscribe);
 router.put("/:id", verifyToken, updateUser);
 router.delete("/:id", verifyToken, deleteUser);
 router.get("/artist",verifyToken, getAllArtist);
-router.get("/fans",verifyToken, getAllFans);
-router.get("/:id", verifyToken, getSingleUser);
+router.get("/fans", getAllFans);
+router.get("/:id", getSingleUser);
 
 export default router;
