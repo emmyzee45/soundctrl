@@ -20,10 +20,8 @@ export const getSingleUser = async (req, res, next) => {
 export const getAllArtist = async (req, res, next) => {
   try {
     const user = await User.find({isArtist: true});
-    console.log(user)
     res.status(200).json(user);
   }catch(err) {
-    console.log(err)
     next(err)
   }
 };
