@@ -10,7 +10,7 @@ export const register = async (req, res, next) => {
   try {
     const user = await User.find({email: req.body.email});
     console.log(user)
-    if(user.length) return res.status(404).json("Email already exist");
+    if(user.length) return res.status(400).json("Email already exist");
 
     const hash = bcrypt.hashSync(req.body.password, 5);
     const newUser = new User({
