@@ -26,7 +26,7 @@ const connect = async () => {
   }
 };
 // { origin: "http://18.234.121.45", credentials: true }
-app.use(cors());
+app.use(cors({ origin: "http://ec2-52-87-176-35.compute-1.amazonaws.com", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

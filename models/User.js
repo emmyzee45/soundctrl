@@ -14,7 +14,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
   },
   avatarImg: {
     type: String,
@@ -27,6 +27,10 @@ const userSchema = new Schema({
   chatprofileImg: {
     type: String,
     required: false,
+  },
+  loginPlatform: {
+    type: String,
+    required: false
   },
   country: {
     type: String,

@@ -9,7 +9,6 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res, next) => {
   try {
     const user = await User.find({email: req.body.email});
-    console.log(user)
     if(user.length) return res.status(400).json("Email already exist");
 
     const hash = bcrypt.hashSync(req.body.password, 5);
@@ -44,18 +43,47 @@ export const login = async (req, res, next) => {
     );
 
     const { password, ...info } = user._doc;
-    // res
-    //   .cookie("accessToken", token, {
-    //     httpOnly: true,
-    //   })
-    //   .status(200)
-    //   .send(info);
-    res.status(200).json({token, ...info});
+    res
+      .cookie("accessToken", token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .send(info);
+    // res.status(200).json({token, ...info});
   } catch (err) {
     next(err);
   }
 };
 
+export const socialAuth = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_KEY);
+      res
+        .cookie("accessToken", token, {
+          httpOnly: true,
+        })
+        .status(200)
+        .json(user._doc);
+    } else {
+      const newUser = new User({
+        ...req.body,
+        // loginService: ,
+      });
+      const savedUser = await newUser.save();
+      const token = jwt.sign({ id: savedUser._id }, process.env.JWT_KEY);
+      res
+        .cookie("accessToken", token, {
+          httpOnly: true,
+        })
+        .status(200)
+        .json(savedUser._doc);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const logout = async (req, res) => {
   res
