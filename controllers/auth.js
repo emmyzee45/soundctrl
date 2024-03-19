@@ -51,6 +51,7 @@ export const login = async (req, res, next) => {
       .send(info);
     // res.status(200).json({token, ...info});
   } catch (err) {
+    console.log(err)
     next(err);
   }
 };
