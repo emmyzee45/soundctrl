@@ -32,11 +32,9 @@ export const login = async (req, res, next) => {
 
     if (!user.password)
       return next(createError(400, "Wrong password or email!"));
-    console.log(user)
     
     const isCorrect = bcrypt.compareSync(req.body.password, user.password);
-    if (!isCorrect || !user.password)
-    console.log(isCorrect)
+    if (!isCorrect)
       return next(createError(400, "Wrong password or email!"));
 
     const token = jwt.sign(
@@ -56,7 +54,6 @@ export const login = async (req, res, next) => {
       .send(info);
     // res.status(200).json({token, ...info});
   } catch (err) {
-    console.log(err)
     next(err);
   }
 };
