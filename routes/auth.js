@@ -7,7 +7,7 @@ router.post("/register", register)
 router.post("/login", login)
 router.post("/login/social", socialAuth)
 router.post("/logout", logout)
-router.post("/forgetpassword", forgotPassword)
+router.post("/forgot-password", forgotPassword)
 router.put("/reset/:token", resetPassword)
 
 export default router;

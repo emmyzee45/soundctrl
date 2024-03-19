@@ -89,6 +89,7 @@ export const socialAuth = async (req, res, next) => {
 };
 
 export const logout = async (req, res) => {
+  console.log("Rout called")
   res
     .clearCookie("accessToken", {
       sameSite: "none",
@@ -114,7 +115,7 @@ if (token) {
 }
 
 
- // Genrate 4 digit code
+ // Genrate 6 digit code
  const loginCode = Math.floor(1000 + Math.random() * 9000);
 
 // Hash token and save
