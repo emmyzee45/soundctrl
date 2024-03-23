@@ -86,6 +86,10 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  newsLetter: {
+    type: Boolean,
+    default: false
+  }
 
 },{
   timestamps:true

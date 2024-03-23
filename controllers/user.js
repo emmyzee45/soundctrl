@@ -1,3 +1,4 @@
+import Emails from "../models/Emails.js";
 import User from "../models/User.js";
 import createError from "../utils/createError.js";
 
@@ -54,11 +55,26 @@ export const subscribe = async (req, res, next) => {
       $addToSet: { subscribedUsers: req.params.id },
     });
     await User.findByIdAndUpdate(req.params.id, {
-      $inc: { subscribers: 1 },
+      $inc: { points: 10 },
+      $addToSet: {subscribers: req.userId}
     });
     res.status(200).json("Subscription successfull.")
   } catch (err) {
     next(err);
   }
 };
+
+export const newsSubscription = async(req, res) => {
+  const newEmail = new Emails(req.body);
+  try {
+    const email = await Emails.findOne(req.body);
+
+    if(email) return res.status(400).json("Email already exist");
+
+    await newEmail.save();
+    res.status(200).json("email saved");
+  }catch(err) {
+    res.status(500).json(err);
+  }
+}
 
