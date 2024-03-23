@@ -52,6 +52,10 @@ const userSchema = new Schema({
     type: Array,
   },
   subscribers: {
+    type: Array,
+    // default: 0,
+  },
+  points: {
     type: Number,
     default: 0,
   },
@@ -67,6 +71,18 @@ const userSchema = new Schema({
     required: false,
   },
   instagram: {
+    type: String,
+    required: false,
+  },
+  spotify: {
+    type: String,
+    required: false,
+  },
+  tiktok: {
+    type: String,
+    required: false,
+  },
+  birthday: {
     type: String,
     required: false,
   },

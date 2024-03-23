@@ -89,7 +89,6 @@ export const socialAuth = async (req, res, next) => {
 };
 
 export const logout = async (req, res) => {
-  console.log("Rout called")
   res
     .clearCookie("accessToken", {
       sameSite: "none",
@@ -153,23 +152,35 @@ try {
 }
 };
 
+// Token Verification
+export const verifyCode = async(req, res) => {
+  const token = req.params.token;
+
+  try {
+    const hashedToken = hashToken(token);
+    const userToken = await Token.findOne({
+      rToken: hashedToken,
+      expiresAt: { $gt: Date.now() },
+    });
+  
+    if (!userToken) {
+      return res.status(404).json("Invalid or Expired Token");
+    }
+    // Find User
+    const user = await User.findOne({ _id: userToken.userId });
+  
+    res.status(200).json(user._id);
+  }catch(err) {
+    res.status(500).json(err);
+  }
+}
+
 // Reset Password
 export const resetPassword = async (req, res) => {
-  const { token } = req.params;
   const { password } = req.body;
-
-  const hashedToken = hashToken(token);
-  const userToken = await Token.findOne({
-    rToken: hashedToken,
-    expiresAt: { $gt: Date.now() },
-  });
-
-  if (!userToken) {
-    return res.status(404).json("Invalid or Expired Token");
-  }
-
   // Find User
-  const user = await User.findOne({ _id: userToken.userId });
+ try{
+  const user = await User.findOne({_id: req.params.id});
   const hash = bcrypt.hashSync(password, 5);
 
   // Now Reset password
@@ -177,4 +188,7 @@ export const resetPassword = async (req, res) => {
   await user.save();
 
   res.status(200).json({ message: "Password Reset Successful, please login" });
+ } catch(err) {
+  res.status(500).json(err);
+ }
 };
