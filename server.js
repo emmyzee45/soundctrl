@@ -27,9 +27,11 @@ const connect = async () => {
 };
 // { origin: "http://18.234.121.45", credentials: true }
 // ["http://ec2-107-23-210-120.compute-1.amazonaws.com", "http://ec2-100-26-240-163.compute-1.amazonaws.com"]
-app.use(cors({ origin: [
+app.use(cors({ origin: 
+  [
   "http://ec2-107-23-210-120.compute-1.amazonaws.com", 
-  "http://ec2-100-26-240-163.compute-1.amazonaws.com"
+  "http://ec2-100-26-240-163.compute-1.amazonaws.com",
+  "http://localhost:3000"
 ], credentials: true }));
 app.use(express.json());
 app.use(cookieParser());

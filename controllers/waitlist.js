@@ -39,19 +39,21 @@ export const sendCode = async(req,res, next) => {
     const { email } = req.body;
 
     // Delete Token if it exists in DB
-    let wailtlist = await Waitlist.findOne({ email, isIsued: true });
+    let wailtlist = await Waitlist.findOne({ email });
     if (wailtlist) {
     await wailtlist.deleteOne();
     }
     
      // Genrate 4 digit code
-     const registerCode = Math.floor(1000 + Math.random() * 9000);
+     const registerCode = Math.floor(10000 + Math.random() * 90000);
     
-    // Hash token and save
-    const hashedToken = hashToken(registerCode);
-    await Waitlist.findOneAndUpdate({email}, {
-        $set: { code: hashedToken, isIsued: true}
-    })
+     // Hash token and save
+     const hashedToken = hashToken(registerCode);
+     
+      // create wait list
+      const newWaitlist = new Waitlist({email: email, code: hashedToken});
+
+    await newWaitlist.save();
     
 
 // Send Email
@@ -94,7 +96,7 @@ export const confirmCode = async(req,res, next) => {
         if (!userCode) {
             return res.status(404).json("Invalid Code");
         }
-        res.status(200).json("Code validation successfully")
+        res.status(200).json(userCode.email)
     }catch(err) {
         next(err)
     }
