@@ -82,6 +82,10 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  apple: {
+    type: String,
+    required: false,
+  },
   birthday: {
     type: String,
     required: false,
