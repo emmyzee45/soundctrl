@@ -7,7 +7,7 @@ const ticketSchema = mongoose.Schema({
     ref: "user",
   },
   time: {
-    type: Date,
+    type: String,
     required: true,
   },
   link: {
