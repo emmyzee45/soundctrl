@@ -92,12 +92,11 @@ export const confirm = async (req, res, next) => {
         },
       }
     );
-    console.log(orders)
-    await User.findByIdAndUpdate(orders.buyerId, {
-      $addToSet: { subscribedUsers: orders.sellerId }
-    });
     await User.findByIdAndUpdate(orders.sellerId, {
-      $addToSet: { subscribers: orders.buyerId }
+      $addToSet: { subscribedUsers: orders.buyerId }
+    });
+    await User.findByIdAndUpdate(orders.buyerId, {
+      $addToSet: { subscribers: orders.sellerId }
     })
     res.status(200).send("Order has been confirmed.");
   } catch (err) {
