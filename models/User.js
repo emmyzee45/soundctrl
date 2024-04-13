@@ -93,6 +93,16 @@ const userSchema = new Schema({
   newsLetter: {
     type: Boolean,
     default: false
+  },
+  earnings: {
+    subscriptions: {
+      type: Number,
+      default: 0,
+    },
+    bookings: {
+      type: Number,
+      default: 0,
+    }
   }
 
 },{

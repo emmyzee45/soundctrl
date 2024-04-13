@@ -12,6 +12,7 @@ export const intent = async (req, res, next) => {
     automatic_payment_methods: {
       enabled: true,
     },
+    // await stripe.
   });
 
   const newOrder = new Order({
@@ -93,7 +94,10 @@ export const confirm = async (req, res, next) => {
       }
     );
     await User.findByIdAndUpdate(orders.sellerId, {
-      $addToSet: { subscribedUsers: orders.buyerId }
+      $addToSet: { subscribedUsers: orders.buyerId },
+      $inc: orders.type == "subscription" ? 
+      { "earnings.subscriptions": orders.price } : 
+      { "earnings.bookings": orders.price }
     });
     await User.findByIdAndUpdate(orders.buyerId, {
       $addToSet: { subscribers: orders.sellerId },
@@ -102,7 +106,6 @@ export const confirm = async (req, res, next) => {
 
     res.status(200).send("Order has been confirmed.");
   } catch (err) {
-    console.log(err)
     next(err);
   }
 };
