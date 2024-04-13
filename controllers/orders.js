@@ -96,8 +96,10 @@ export const confirm = async (req, res, next) => {
       $addToSet: { subscribedUsers: orders.buyerId }
     });
     await User.findByIdAndUpdate(orders.buyerId, {
-      $addToSet: { subscribers: orders.sellerId }
-    })
+      $addToSet: { subscribers: orders.sellerId },
+      $inc: {points: 10 }
+    });
+
     res.status(200).send("Order has been confirmed.");
   } catch (err) {
     console.log(err)
