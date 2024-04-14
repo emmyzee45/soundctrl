@@ -2,9 +2,9 @@ import Order from "../models/Order.js";
 import User from "../models/User.js";
 import Stripe from "stripe";
 
-export const intent = async (req, res, next) => {
-  const stripe = new Stripe("sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83");
+const stripe = new Stripe("sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83");
 
+export const intent = async (req, res, next) => {
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: req.body.price * 100,
@@ -30,6 +30,22 @@ export const intent = async (req, res, next) => {
     // result: "success"
   });
 };
+
+export const transfer = async(req, res, next) => {
+  const {amount, account_id } = req.body;
+
+  try {
+    const transfer = await stripe.transfers.create({
+      amount: amount * 100,
+      currency: "usd",
+      destination: account_id
+    });
+
+    res.status(200).json(transfer);
+  }catch(err) {
+    next(err);
+  }
+}
 
 export const getOrders = async (req, res, next) => {
   try {
