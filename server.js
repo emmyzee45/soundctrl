@@ -29,8 +29,8 @@ const connect = async () => {
 // ["http://ec2-107-23-210-120.compute-1.amazonaws.com", "http://ec2-100-26-240-163.compute-1.amazonaws.com"]
 app.use(cors({ origin: 
   [
-  "http://ec2-107-23-210-120.compute-1.amazonaws.com", 
   "http://ec2-100-26-240-163.compute-1.amazonaws.com",
+  "http://ec2-18-234-107-143.compute-1.amazonaws.com",
   "http://localhost:3000"
 ], credentials: true }));
 app.use(express.json());
