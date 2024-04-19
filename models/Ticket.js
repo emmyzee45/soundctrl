@@ -16,8 +16,12 @@ const ticketSchema = mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true,
-  }
+    required: false,
+  },
+  meetingId: {
+    type: String,
+    required: false,
+  },
 }, {timestamps: true});
 
 export default mongoose.model("Ticket", ticketSchema);
