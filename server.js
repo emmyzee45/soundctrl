@@ -25,6 +25,12 @@ const connect = async () => {
     console.log(error);
   }
 };
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', "http://ec2-100-26-240-163.compute-1.amazonaws.com");
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 // { origin: "http://18.234.121.45", credentials: true }
 // ["http://ec2-107-23-210-120.compute-1.amazonaws.com", "http://ec2-100-26-240-163.compute-1.amazonaws.com"]
 app.use(cors({ origin: 
