@@ -16,11 +16,15 @@ const ticketSchema = mongoose.Schema({
   },
   price: {
     type: Number,
-    required: false,
+    default: 0,
   },
   meetingId: {
     type: String,
     required: false,
+  },
+  status: {
+    type: String,
+    default: "prepared"
   },
 }, {timestamps: true});
 

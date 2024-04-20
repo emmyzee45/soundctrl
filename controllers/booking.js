@@ -67,7 +67,7 @@ export const createTicket = async (req, res, next) => {
 // update tickets by artist
 export const updateTickets = async (req, res, next) => {
   try {
-    const tickets = await Ticket.findByAndUpdate(req.params.id, req.body, {new: true});
+    const tickets = await Ticket.findByIdAndUpdate(req.params.id, req.body, {new: true});
     if(!tickets) return next(createError(404, "Not found!"));
 
     res.status(200).send(tickets);

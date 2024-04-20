@@ -102,6 +102,10 @@ const userSchema = new Schema({
     bookings: {
       type: Number,
       default: 0,
+    },
+    total: {
+      type: Number,
+      default: 0
     }
   }
 

@@ -113,7 +113,8 @@ export const confirm = async (req, res, next) => {
       $addToSet: { subscribedUsers: orders.buyerId },
       $inc: orders.type == "subscription" ? 
       { "earnings.subscriptions": orders.price } : 
-      { "earnings.bookings": orders.price }
+      { "earnings.bookings": orders.price },
+      $inc: { "earnings.total": orders.price }
     });
     await User.findByIdAndUpdate(orders.buyerId, {
       $addToSet: { subscribers: orders.sellerId },
