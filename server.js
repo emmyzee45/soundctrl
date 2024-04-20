@@ -29,6 +29,8 @@ const connect = async () => {
 // ["http://ec2-107-23-210-120.compute-1.amazonaws.com", "http://ec2-100-26-240-163.compute-1.amazonaws.com"]
 app.use(cors({ origin: 
   [
+  "https://dev.artist.soundctrl.xyz",
+  "https://www.dev.artist.soundctrl.xyz",
   "http://ec2-100-26-240-163.compute-1.amazonaws.com",
   "http://ec2-35-153-232-190.compute-1.amazonaws.com",
   "http://localhost:3000"
