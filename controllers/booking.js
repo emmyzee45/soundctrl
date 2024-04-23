@@ -3,6 +3,7 @@ import Ticket from "../models/Ticket.js";
 import { google } from "googleapis";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
+import User from "../models/User.js";
 
 
 export const createTicket = async (req, res, next) => {
@@ -47,7 +48,9 @@ export const createTicket = async (req, res, next) => {
       } else {
         const newTicket = new Ticket({
           artistId: req.userId,
-          time: event.data.start.dateTime,
+          time: req.body.time,
+          // date: event.data.start.dateTime,
+          date: req.body.date,
           link: event.data.hangoutLink,
           meetingId: event.data.id,
           // price: req.body.price,
@@ -91,7 +94,10 @@ export const getTicketsByArtist = async (req, res, next) => {
 export const getTickets = async (req, res, next) => {
   try {
     const tickets = await Ticket.find();
-    res.status(200).send(tickets);
+    const artists = await User.find({ isArtist: true });
+    const result = mergeTwoArray(artists, tickets);
+
+    res.status(200).send(result);
   } catch (err) {
     next(err);
   }
@@ -106,3 +112,19 @@ export const deleteTicket = async (req, res, next) => {
     next(err);
   }
 };
+
+
+function mergeTwoArray(artists, bookings) {
+  let mergeArray = [];
+
+  artists.forEach((user) => {
+
+    bookings.forEach(obj => {
+      if(user._id.toString() === obj.artistId.toString()) {
+        mergeArray.push({...obj._doc, username: user.username })
+      }
+    })
+  })
+
+  return mergeArray;
+}

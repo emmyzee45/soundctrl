@@ -6,7 +6,16 @@ const ticketSchema = mongoose.Schema({
     required: true,
     ref: "user",
   },
+  fanId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
+    ref: "user"
+  },
   time: {
+    type: String,
+    required: true,
+  },
+  date:{
     type: String,
     required: true,
   },

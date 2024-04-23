@@ -5,7 +5,7 @@ import { verifyArtist, verifyToken } from "../middleware/jwt.js";
 const router = express.Router();
 
 router.post("/", [verifyToken, verifyArtist], createTicket);
-router.put("/:id", [verifyToken, verifyArtist], updateTickets);
+router.put("/:id", [verifyToken], updateTickets);
 router.delete("/:id", [verifyToken, verifyArtist], deleteTicket);
 router.get("/:id", getTicketsByArtist);
 router.get("/", getTickets);

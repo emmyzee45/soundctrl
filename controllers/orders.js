@@ -99,7 +99,7 @@ export const bookingEarning = async(req, res) => {
 }
 export const confirm = async (req, res, next) => {
   try {
-    const orders = await Order.findOneAndUpdate(
+    const order = await Order.findOneAndUpdate(
       {
         payment_intent: req.body.payment_intent,
       },
@@ -109,19 +109,19 @@ export const confirm = async (req, res, next) => {
         },
       }
     );
-    await User.findByIdAndUpdate(orders.sellerId, {
-      $addToSet: { subscribedUsers: orders.buyerId },
-      $inc: orders.type == "subscription" ? 
-      { "earnings.subscriptions": orders.price } : 
-      { "earnings.bookings": orders.price },
-      $inc: { "earnings.total": orders.price }
+    await User.findByIdAndUpdate(order.sellerId, {
+      $addToSet: { subscribedUsers: order.buyerId },
+      $inc: order.type == "subscription" ? 
+      { "earnings.subscriptions": order.price } : 
+      { "earnings.bookings": order.price },
+      $inc: { "earnings.total": order.price }
     });
-    await User.findByIdAndUpdate(orders.buyerId, {
-      $addToSet: { subscribers: orders.sellerId },
+    await User.findByIdAndUpdate(order.buyerId, {
+      $addToSet: { subscribers: order.sellerId },
       $inc: {points: 10 }
     });
 
-    res.status(200).send("Order has been confirmed.");
+    res.status(200).send(order);
   } catch (err) {
     next(err);
   }
