@@ -70,6 +70,10 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  refresh_token: {
+    type: String,
+    required: false
+  },
   instagram: {
     type: String,
     required: false,

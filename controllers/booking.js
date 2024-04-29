@@ -4,22 +4,83 @@ import { google } from "googleapis";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
 import User from "../models/User.js";
+import axios from "axios";
 
+const scopes = ['https://www.googleapis.com/auth/calendar'];
+
+const auth2Client = function() {
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_REDIRECT,
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+  );
+
+  return oauth2Client;
+}
+
+const authCalendar = function() {
+  const calendar = google.calendar({
+    version: "v3",
+    auth: process.env.GOOGLE_API_KEY
+  });
+
+  return calendar;
+}
+
+export const generateAuthUrl = async(req, res) => {
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT
+  )
+
+  try {
+    const url = oauth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: scopes,
+      prompt: "consent",
+      uxMode: "popup",
+    });
+
+    res.status(200).json(url);
+  }catch(err){
+    console.log(err)
+  }
+}
+
+export const handleGoogleAuth = async(req, res) => {
+  try {
+    console.log(req.query.code)
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT
+    );
+    const { tokens } = await oauth2Client.getToken(req.query.code);
+    console.log(tokens)
+    oauth2Client.setCredentials(tokens)
+    console.log(oauth2Client)
+    res.status(200).json({msg: "Successful"})
+  }catch(err) {
+    console.log(err)
+  }
+}
 
 export const createTicket = async (req, res, next) => {
   const calendar = google.calendar({
     version: "v3",
     auth: process.env.GOOGLE_API_KEY
   })
- 
+  // console.log(req.body)
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     process.env.GOOGLE_REDIRECT
   );
-  oauth2Client.setCredentials(req.body.accessToken)
-
   try {
+    const { tokens } = await oauth2Client.getToken(req.body.token);
+    oauth2Client.setCredentials(tokens)
+
     calendar.events.insert({
       calendarId: "primary",
       auth: oauth2Client,
@@ -55,6 +116,7 @@ export const createTicket = async (req, res, next) => {
           meetingId: event.data.id,
           // price: req.body.price,
         });
+        await User.findByIdAndUpdate(req.userId, { refresh_token: tokens.refresh_token })
         const savedTicket = await newTicket.save();
     
         // res.status(201).send(savedTicket);
@@ -66,6 +128,49 @@ export const createTicket = async (req, res, next) => {
     next(err);
   }
 };
+
+export const updateCalendar = async(req, res) => {
+  const calendar = google.calendar({
+    version: "v3",
+    auth: process.env.GOOGLE_API_KEY
+  })
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT
+  )
+
+  try{
+    const user = await User.findById(req.body.artistId);
+    await oauth2Client.setCredentials({
+      refresh_token: user.refresh_token
+    })
+
+    calendar.events.patch({
+      calendarId: "primary",
+      eventId: req.body.meetingId,
+      auth: oauth2Client,
+      requestBody: {
+        attendees: [
+          { "email": req.body.email }
+        ]
+      }
+    }, async(err, event) => {
+      if(err) {
+        console.log(err)
+      } else {
+        const updatedTicket = await Ticket.findByIdAndUpdate(
+          req.params.id, { status: "book" }, { new: true }
+        );
+        res.status(200).json(updatedTicket);
+      }
+    })
+   
+  }catch(err) {
+    console.log(err)
+  }
+
+}
 
 // update tickets by artist
 export const updateTickets = async (req, res, next) => {

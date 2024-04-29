@@ -41,7 +41,6 @@ export const getAllFans = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true});
-
     res.status(200).send(user);
   }catch(err) {
     next(err)
