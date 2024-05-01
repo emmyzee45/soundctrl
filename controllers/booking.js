@@ -27,7 +27,7 @@ const authCalendar = function() {
   return calendar;
 }
 
-export const generateAuthUrl = async(req, res) => {
+export const generateAuthUrl = async() => {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
@@ -42,7 +42,8 @@ export const generateAuthUrl = async(req, res) => {
       uxMode: "popup",
     });
 
-    res.status(200).json(url);
+    return url
+    // res.status(200).json(url);
   }catch(err){
     console.log(err)
   }
@@ -50,16 +51,13 @@ export const generateAuthUrl = async(req, res) => {
 
 export const handleGoogleAuth = async(req, res) => {
   try {
-    console.log(req.query.code)
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
       process.env.GOOGLE_REDIRECT
     );
     const { tokens } = await oauth2Client.getToken(req.query.code);
-    console.log(tokens)
-    oauth2Client.setCredentials(tokens)
-    console.log(oauth2Client)
+    await User.findByIdAndUpdate(req.userId, {refresh_token: tokens.refresh_token});
     res.status(200).json({msg: "Successful"})
   }catch(err) {
     console.log(err)
@@ -78,8 +76,14 @@ export const createTicket = async (req, res, next) => {
     process.env.GOOGLE_REDIRECT
   );
   try {
-    const { tokens } = await oauth2Client.getToken(req.body.token);
-    oauth2Client.setCredentials(tokens)
+    const user = await User.findById(req.userId);
+    if(!user.refresh_token){
+      const url = await generateAuthUrl();
+       return res.status(201).json(url);
+    }
+    await oauth2Client.setCredentials({
+    refresh_token: user.refresh_token
+    })
 
     calendar.events.insert({
       calendarId: "primary",
@@ -110,16 +114,12 @@ export const createTicket = async (req, res, next) => {
         const newTicket = new Ticket({
           artistId: req.userId,
           time: req.body.time,
-          // date: event.data.start.dateTime,
           date: req.body.date,
           link: event.data.hangoutLink,
           meetingId: event.data.id,
-          // price: req.body.price,
         });
-        await User.findByIdAndUpdate(req.userId, { refresh_token: tokens.refresh_token })
         const savedTicket = await newTicket.save();
     
-        // res.status(201).send(savedTicket);
         res.status(200).json(savedTicket)
       }
     })
@@ -167,7 +167,7 @@ export const updateCalendar = async(req, res) => {
     })
    
   }catch(err) {
-    console.log(err)
+    next(err)
   }
 
 }

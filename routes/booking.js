@@ -9,7 +9,7 @@ router.put("/event/:id", [verifyToken], updateCalendar);
 router.put("/:id", [verifyToken], updateTickets);
 router.delete("/:id", [verifyToken, verifyArtist], deleteTicket);
 router.get("/generate", generateAuthUrl);
-router.get("/google", handleGoogleAuth);
+router.get("/google",[verifyToken, verifyArtist], handleGoogleAuth);
 router.get("/:id", getTicketsByArtist);
 router.get("/", getTickets);
 
