@@ -33,10 +33,7 @@ app.use(cors({ origin:
     "https://dev.artist.soundctrl.xyz",
     "https://www.dev.fans.soundctrl.xyz",
   "https://www.dev.artist.soundctrl.xyz",
-  "http://ec2-100-26-240-163.compute-1.amazonaws.com",
-  "http://ec2-35-153-232-190.compute-1.amazonaws.com",
   "http://localhost:3000",
-  "http://localhost:3001",
 ], credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
