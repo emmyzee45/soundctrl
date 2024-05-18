@@ -70,6 +70,10 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  account_id: {
+    type: String,
+    required: false
+  },
   refresh_token: {
     type: String,
     required: false
@@ -93,6 +97,10 @@ const userSchema = new Schema({
   birthday: {
     type: String,
     required: false,
+  },
+  onboarding_complete: {
+    type: Boolean, 
+    default: false
   },
   newsLetter: {
     type: Boolean,

@@ -15,6 +15,9 @@ const ticketSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  interval: {
+    type: Number,
+  },
   date:{
     type: String,
     required: true,

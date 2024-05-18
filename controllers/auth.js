@@ -41,6 +41,7 @@ export const login = async (req, res, next) => {
       {
         id: user._id,
         isArtist: user.isArtist,
+        account_id: user.account_id
       },
       process.env.JWT_KEY
     );

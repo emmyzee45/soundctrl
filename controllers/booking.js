@@ -117,6 +117,7 @@ export const createTicket = async (req, res, next) => {
           date: req.body.date,
           link: event.data.hangoutLink,
           meetingId: event.data.id,
+          interval: req.body.interval
         });
         const savedTicket = await newTicket.save();
     

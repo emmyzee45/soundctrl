@@ -1,3 +1,4 @@
+import { artifactregistry } from "googleapis/build/src/apis/artifactregistry/index.js";
 import Order from "../models/Order.js";
 import User from "../models/User.js";
 import Stripe from "stripe";
@@ -6,29 +7,41 @@ const stripe = new Stripe("sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDj
 
 export const intent = async (req, res, next) => {
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: req.body.price * 100,
+  const { price, type, artistId } = req.body;
+  try {
+    const artist = await User.findOne({_id: artistId});
+    const paymentIntent = await stripe.paymentIntents.create({
+    amount: price * 100,
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,
     },
+    transfer_data: {
+      amount: price * 100 * 0.8,
+      destination: artist.account_id
+      
+    }
     // await stripe.
   });
-
+  
   const newOrder = new Order({
-    type: req.body.type,
+    type: type,
     buyerId: req.userId,
-    sellerId: req.body.artistId,
-    price: req.body.price,
+    sellerId: artistId,
+    price: price,
     payment_intent: paymentIntent.id,
   });
-
+  
   await newOrder.save();
-
+  
   res.status(200).send({
     clientSecret: paymentIntent.client_secret,
     // result: "success"
   });
+
+}catch(err) {
+  next(err)
+}
 };
 
 export const transfer = async(req, res, next) => {
