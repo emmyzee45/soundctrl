@@ -1,7 +1,9 @@
 import User from "../models/User.js";
 import createError from "../utils/createError.js"
 import Stripe from "stripe";
-const stripe = new Stripe("sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83");
+
+// "sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83"
+const stripe = new Stripe(process.env.STRIPE);
 
 export const createStripeAccount = async(req, res, next) => {
     try {
