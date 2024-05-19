@@ -156,7 +156,7 @@ try {
 // Token Verification
 export const verifyCode = async(req, res) => {
   const token = req.params.token;
-
+  
   try {
     const hashedToken = hashToken(token);
     const userToken = await Token.findOne({
