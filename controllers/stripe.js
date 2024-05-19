@@ -6,6 +6,7 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE);
 
 export const createStripeAccount = async(req, res, next) => {
+    console.log(process.env.STRIPE)
     try {
         const user = await User.findById(req.userId);
         let accountId = user.account_id;
@@ -92,6 +93,7 @@ export const completeOnboarding = async(req, res, next) => {
         }
         res.status(400).json("Not completed")
     }catch(err) {
+        console.log(err)
         next(err)
     }
 }
@@ -115,6 +117,7 @@ export const payout = async(req, res, next) => {
 
         res.status(200).json(payout);
     }catch(err) {
+        console.log(err)
         next(err)
     }
 };
@@ -146,6 +149,7 @@ export const getAccountDetails = async(req, res, next) => {
         });
       
     }catch(err) {
+        console.log(err)
         next(err)
     }
 }
