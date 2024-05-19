@@ -61,8 +61,8 @@ export const createStripeAccount = async(req, res, next) => {
         // Create account link for user's stripe account
         const account_link = await stripe.accountLinks.create({
             account: accountId,
-            refresh_url: "http://localhost:3000/artist-dashboard",
-            return_url: "http://localhost:3000/artist-dashboard",
+            refresh_url: `${process.env.PUBLIC_DOMAIN}/artist-dashboard`,
+            return_url: `${process.env.PUBLIC_DOMAIN}/artist-dashboard`,
             type: "account_onboarding"
         });
 

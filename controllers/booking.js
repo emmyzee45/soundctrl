@@ -109,7 +109,7 @@ export const createTicket = async (req, res, next) => {
       }
     }, async(err, event) => {
       if(err) {
-        console.log(err)
+
       } else {
         const newTicket = new Ticket({
           artistId: req.userId,
