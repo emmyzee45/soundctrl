@@ -3,9 +3,9 @@ import createError from "../utils/createError.js"
 import Stripe from "stripe";
 
 // "sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83"
-const stripe = new Stripe(process.env.STRIPE);
 
 export const createStripeAccount = async(req, res, next) => {
+    const stripe = new Stripe(process.env.STRIPE);
     console.log(process.env.STRIPE)
     try {
         const user = await User.findById(req.userId);
@@ -76,7 +76,7 @@ export const createStripeAccount = async(req, res, next) => {
 
 // Endpoint for user's onboarding, checks if onboarding has been completed
 export const completeOnboarding = async(req, res, next) => {
-    
+    const stripe = new Stripe(process.env.STRIPE);
     try {
         const user = await User.findById(req.userId);
 
@@ -100,6 +100,8 @@ export const completeOnboarding = async(req, res, next) => {
 
 // Generate payout with stripe for available balance
 export const payout = async(req, res, next) => {
+    const stripe = new Stripe(process.env.STRIPE);
+
     try {
         const user = await User.findById(req.userId);
         
@@ -124,6 +126,8 @@ export const payout = async(req, res, next) => {
 
 // get account details
 export const getAccountDetails = async(req, res, next) => {
+    const stripe = new Stripe(process.env.STRIPE);
+
     try {
         const user = await User.findById(req.userId);
 
@@ -155,6 +159,7 @@ export const getAccountDetails = async(req, res, next) => {
 }
 
 export const generateCharge = async(req, res, next) => {
+    const stripe = new Stripe(process.env.STRIPE);
     // if (req.body.immediate_balance) {
     //     source = getTestSource('immediate_balance');
     //   } else if (req.body.payout_limit) {
