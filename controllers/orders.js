@@ -4,9 +4,9 @@ import User from "../models/User.js";
 import Stripe from "stripe";
 
 // "sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83"
-const stripe = new Stripe(process.env.STRIPE);
 
 export const intent = async (req, res, next) => {
+  const stripe = new Stripe(process.env.STRIPE);
 
   const { price, type, artistId } = req.body;
   try {
@@ -41,11 +41,14 @@ export const intent = async (req, res, next) => {
   });
 
 }catch(err) {
+  console.log(err)
   next(err)
 }
 };
 
 export const transfer = async(req, res, next) => {
+  const stripe = new Stripe(process.env.STRIPE);
+  
   const {amount, account_id } = req.body;
 
   try {

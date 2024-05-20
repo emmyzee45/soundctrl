@@ -3,10 +3,10 @@ import createError from "../utils/createError.js"
 import Stripe from "stripe";
 
 // "sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83"
-
+const stripe = new Stripe(process.env.STRIPE);
 export const createStripeAccount = async(req, res, next) => {
     const stripe = new Stripe(process.env.STRIPE);
-    console.log(process.env.STRIPE)
+
     try {
         const user = await User.findById(req.userId);
         let accountId = user.account_id;
@@ -69,7 +69,6 @@ export const createStripeAccount = async(req, res, next) => {
 
         res.status(200).json(account_link.url);
     }catch(err) {
-        console.log(err)
         next(err)
     }
 }
@@ -77,6 +76,7 @@ export const createStripeAccount = async(req, res, next) => {
 // Endpoint for user's onboarding, checks if onboarding has been completed
 export const completeOnboarding = async(req, res, next) => {
     const stripe = new Stripe(process.env.STRIPE);
+
     try {
         const user = await User.findById(req.userId);
 
@@ -93,7 +93,6 @@ export const completeOnboarding = async(req, res, next) => {
         }
         res.status(400).json("Not completed")
     }catch(err) {
-        console.log(err)
         next(err)
     }
 }
@@ -119,7 +118,6 @@ export const payout = async(req, res, next) => {
 
         res.status(200).json(payout);
     }catch(err) {
-        console.log(err)
         next(err)
     }
 };
@@ -153,7 +151,6 @@ export const getAccountDetails = async(req, res, next) => {
         });
       
     }catch(err) {
-        console.log(err)
         next(err)
     }
 }
@@ -188,7 +185,6 @@ export const generateCharge = async(req, res, next) => {
       res.status(200);
     }catch(err) {
         res.status(500).json(err);
-        console.log(err)
     }
 }
 

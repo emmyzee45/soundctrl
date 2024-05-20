@@ -50,6 +50,7 @@ export const generateAuthUrl = async() => {
 }
 
 export const handleGoogleAuth = async(req, res) => {
+
   try {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
