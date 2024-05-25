@@ -1,6 +1,6 @@
 import express from "express";
 import { completeOnboarding, createStripeAccount, getAccountDetails, payout, generateCharge } from "../controllers/stripe.js";
-import { verifyArtist, verifyToken } from "../middleware/jwt.js";
+import { verifyArtist, verifyToken } from "../middleware/verification.js";
 
 const router = express.Router();
 

@@ -62,8 +62,8 @@ export const createStripeAccount = async(req, res, next) => {
         // Create account link for user's stripe account
         const account_link = await stripe.accountLinks.create({
             account: accountId,
-            refresh_url: `${process.env.PUBLIC_DOMAIN}/artist-dashboard`,
-            return_url: `${process.env.PUBLIC_DOMAIN}/artist-dashboard`,
+            refresh_url: `${process.env.ARTIST_PUBLIC_DOMAIN}/artist-dashboard`,
+            return_url: `${process.env.ARTIST_PUBLIC_DOMAIN}/artist-dashboard`,
             type: "account_onboarding"
         });
 
@@ -140,7 +140,7 @@ export const getAccountDetails = async(req, res, next) => {
         // Generate a unique login link for associcated stripe account to access their express dashboard
         const login_link = await stripe.accounts.createLoginLink(
             user.account_id, {
-                redirect_url: `${process.env.PUBLIC_DOMAIN}/artist-dashboard`
+                redirect_url: `${process.env.ARTIST_PUBLIC_DOMAIN}/artist-dashboard`
             }
         )
         res.status(200).json({ 
@@ -151,6 +151,7 @@ export const getAccountDetails = async(req, res, next) => {
         });
       
     }catch(err) {
+        console.log(err);
         next(err)
     }
 }

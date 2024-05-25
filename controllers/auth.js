@@ -63,26 +63,43 @@ export const socialAuth = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_KEY);
-      res
-        .cookie("accessToken", token, {
-          httpOnly: true,
-        })
-        .status(200)
-        .json(user._doc);
+      const token = jwt.sign({
+        id: user._id,
+        isArtist: user.isArtist,
+        account_id: user.account_id
+      }, process.env.JWT_KEY);
+      
+      // res
+      //   .cookie("accessToken", token, {
+      //     httpOnly: true,
+      //   })
+      //   .status(200)
+      //   .json(user._doc);
+      const {password, ...info} = user._doc;
+      
+      res.status(200).json({token, userInfo: {...info}});
     } else {
       const newUser = new User({
         ...req.body,
         // loginService: ,
       });
       const savedUser = await newUser.save();
-      const token = jwt.sign({ id: savedUser._id }, process.env.JWT_KEY);
-      res
-        .cookie("accessToken", token, {
-          httpOnly: true,
-        })
-        .status(200)
-        .json(savedUser._doc);
+      const token = jwt.sign({
+        id: savedUser._id,
+        isArtist: savedUser.isArtist,
+        account_id: savedUser.account_id
+      }, process.env.JWT_KEY);
+      
+      // res
+      //   .cookie("accessToken", token, {
+      //     httpOnly: true,
+      //   })
+      //   .status(200)
+      //   .json(savedUser._doc);
+
+      const {password, ...info} = savedUser._doc;
+      
+      res.status(200).json({ token, userInfo: {...info} });
     }
   } catch (err) {
     next(err);

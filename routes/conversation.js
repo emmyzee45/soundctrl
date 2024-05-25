@@ -6,7 +6,7 @@ import {
   getSingleConversation,
   updateConversation,
 } from "../controllers/conversation.js";
-import { verifyToken, verifyTokenAndAuthorization } from "../middleware/jwt.js";
+import { verifyToken, verifyTokenAndAuthorization } from "../middleware/verification.js";
 
 const router = express.Router();
 

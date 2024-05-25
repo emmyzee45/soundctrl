@@ -4,7 +4,7 @@ import {
   deleteMessages,
   getMessages,
 } from "../controllers/message.js";
-import { verifyToken, verifyTokenAndAuthorization } from "../middleware/jwt.js";
+import { verifyToken, verifyTokenAndAuthorization } from "../middleware/verification.js";
 
 const router = express.Router();
 

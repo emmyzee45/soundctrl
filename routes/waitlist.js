@@ -1,6 +1,6 @@
 import express from "express";
 import { confirmCode, createWaitlist, deleteWaitlist, getWaitlists, sendCode } from "../controllers/waitlist.js";
-import { verifyToken } from "../middleware/jwt.js";
+import { verifyToken } from "../middleware/verification.js";
 
 const router = express.Router();
 

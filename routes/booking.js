@@ -1,6 +1,6 @@
 import express from "express";
 import { createTicket, deleteTicket, generateAuthUrl, getTickets, getTicketsByArtist, handleGoogleAuth, updateCalendar, updateTickets } from "../controllers/booking.js";
-import { verifyArtist, verifyToken } from "../middleware/jwt.js";
+import { verifyArtist, verifyToken } from "../middleware/verification.js";
 
 const router = express.Router();
 

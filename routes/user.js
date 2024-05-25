@@ -1,6 +1,6 @@
 import express from "express";
 import { deleteUser, getAllArtist, getAllFans, getSingleUser, newsSubscription, subscribe, updateUser } from "../controllers/user.js";
-import { verifyToken } from "../middleware/jwt.js";
+import { verifyToken } from "../middleware/verification.js";
 
 const router = express.Router();
 

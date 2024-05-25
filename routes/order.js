@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyToken } from "../middleware/jwt.js";
+import { verifyToken } from "../middleware/verification.js";
 import { getOrders, intent, confirm, bookingEarning, subsEarnings, transfer } from "../controllers/orders.js";
 
 const router = express.Router();
