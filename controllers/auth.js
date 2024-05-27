@@ -41,7 +41,6 @@ export const login = async (req, res, next) => {
       {
         id: user._id,
         isArtist: user.isArtist,
-        account_id: user.account_id
       },
       process.env.JWT_KEY
     );
@@ -60,13 +59,13 @@ export const login = async (req, res, next) => {
 };
 
 export const socialAuth = async (req, res, next) => {
+
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       const token = jwt.sign({
         id: user._id,
         isArtist: user.isArtist,
-        account_id: user.account_id
       }, process.env.JWT_KEY);
       
       // res
@@ -87,7 +86,6 @@ export const socialAuth = async (req, res, next) => {
       const token = jwt.sign({
         id: savedUser._id,
         isArtist: savedUser.isArtist,
-        account_id: savedUser.account_id
       }, process.env.JWT_KEY);
       
       // res

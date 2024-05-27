@@ -58,7 +58,7 @@ export const handleGoogleAuth = async(req, res) => {
       process.env.GOOGLE_REDIRECT
     );
     const { tokens } = await oauth2Client.getToken(req.query.code);
-    await User.findByIdAndUpdate(req.userId, {refresh_token: tokens.refresh_token});
+    await User.findByIdAndUpdate(req.userId, {google_refresh_token: tokens.refresh_token});
     res.status(200).json({msg: "Successful"})
   }catch(err) {
     console.log(err)
@@ -78,12 +78,12 @@ export const createTicket = async (req, res, next) => {
   );
   try {
     const user = await User.findById(req.userId);
-    if(!user.refresh_token){
+    if(!user.google_refresh_token){
       const url = await generateAuthUrl();
        return res.status(201).json(url);
     }
     await oauth2Client.setCredentials({
-    refresh_token: user.refresh_token
+    refresh_token: user.google_refresh_token
     })
 
     calendar.events.insert({
@@ -145,7 +145,7 @@ export const updateCalendar = async(req, res) => {
   try{
     const user = await User.findById(req.body.artistId);
     await oauth2Client.setCredentials({
-      refresh_token: user.refresh_token
+      refresh_token: user.google_refresh_token
     })
 
     calendar.events.patch({

@@ -9,7 +9,7 @@ export const createStripeAccount = async(req, res, next) => {
 
     try {
         const user = await User.findById(req.userId);
-        let accountId = user.account_id;
+        let accountId = user.stripe_account_id;
 
         if(!accountId) {
             // Define parameters to create new stripe account id
@@ -55,7 +55,7 @@ export const createStripeAccount = async(req, res, next) => {
             )
 
             // Update model and store the stripe account id in database
-            user.account_id = accountId;
+            user.stripe_account_id = accountId;
             await user.save();
         }
 
@@ -81,9 +81,9 @@ export const completeOnboarding = async(req, res, next) => {
         const user = await User.findById(req.userId);
 
         // if completed onboarding already recorded
-        if(user.onboarding_complete || !user.account_id) return res.status(200).json(user);
+        if(user.onboarding_complete || !user.stripe_account_id) return res.status(200).json(user);
 
-        const account = await stripe.accounts.retrieve(user.account_id);
+        const account = await stripe.accounts.retrieve(user.stripe_account_id);
 
         if(account.details_submitted) {
             user.onboarding_complete = true;
@@ -105,7 +105,7 @@ export const payout = async(req, res, next) => {
         const user = await User.findById(req.userId);
         
         const balance = await stripe.balance.retrieve({
-            stripeAccount: user.account_id
+            stripeAccount: user.stripe_account_id
         });
 
         const {amount, currency} = balance.available[0];
@@ -114,7 +114,7 @@ export const payout = async(req, res, next) => {
             amount: amount,
             currency: currency,
             statement_descriptor: 'Transaction made by sound control'
-        }, { stripeAccount: user.account_id });
+        }, { stripeAccount: user.stripe_account_id });
 
         res.status(200).json(payout);
     }catch(err) {
@@ -134,12 +134,12 @@ export const getAccountDetails = async(req, res, next) => {
 
         // Retrieve account details
         const balance = await stripe.balance.retrieve({
-            stripeAccount: user.account_id,
+            stripeAccount: user.stripe_account_id,
         });
 
         // Generate a unique login link for associcated stripe account to access their express dashboard
         const login_link = await stripe.accounts.createLoginLink(
-            user.account_id, {
+            user.stripe_account_id, {
                 redirect_url: `${process.env.ARTIST_PUBLIC_DOMAIN}/artist-dashboard`
             }
         )
@@ -180,7 +180,7 @@ export const generateCharge = async(req, res, next) => {
       const transfer = await stripe.transfers.create({
         amount: 2000 * 0.9,
         currency: "usd",
-        destination: artist.account_id,
+        destination: artist.stripe_account_id,
         transfer_group: "6453635"
       })
       res.status(200);

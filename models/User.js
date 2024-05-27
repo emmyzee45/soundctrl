@@ -70,11 +70,11 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
-  account_id: {
+  stripe_account_id: {
     type: String,
     required: false
   },
-  refresh_token: {
+  google_refresh_token: {
     type: String,
     required: false
   },
@@ -82,7 +82,11 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
-  spotify: {
+  spotify_id: {
+    type: String,
+    required: false,
+  },
+  spotify_refresh_token: {
     type: String,
     required: false,
   },
