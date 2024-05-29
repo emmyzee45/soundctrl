@@ -19,7 +19,7 @@ export const intent = async (req, res, next) => {
     },
     transfer_data: {
       amount: price * 100 * 0.8,
-      destination: artist.account_id
+      destination: artist.stripe_account_id
       
     }
     // await stripe.

@@ -7,12 +7,15 @@ import userRoute from "./routes/user.js";
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/post.js";
 import orderRoute from "./routes/order.js";
+import tiktokRoute from "./routes/tiktok.js";
 import stripeRoute from "./routes/stripe.js";
+import twitterRoute from "./routes/twitter.js";
 import spotifyRoute from "./routes/spotify.js";
 import bookingRoute from "./routes/booking.js";
 import commentRoute from "./routes/comment.js";
 import messageRoute from "./routes/message.js";
 import waitlistRoute from "./routes/waitlist.js";
+import instagramRoute from "./routes/instagram.js";
 import conversationRoute from "./routes/conversation.js";
 
 const app = express();
@@ -44,12 +47,15 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/orders", orderRoute);
+app.use("/api/tiktok", tiktokRoute);
 app.use("/api/stripe", stripeRoute);
 app.use("/api/spotify", spotifyRoute);
+app.use("/api/twitter", twitterRoute);
 app.use("/api/bookings", bookingRoute);
 app.use("/api/comments", commentRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/waitlists", waitlistRoute);
+app.use("/api/instagram", instagramRoute);
 app.use("/api/conversations", conversationRoute);
 
 app.use((err, req, res, next) => {

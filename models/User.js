@@ -66,7 +66,7 @@ const userSchema = new Schema({
     type: Boolean,
     default:false
   },
-  twitter: {
+  twitter_refresh_token: {
     type: String,
     required: false,
   },
@@ -78,7 +78,7 @@ const userSchema = new Schema({
     type: String,
     required: false
   },
-  instagram: {
+  instagram_refresh_token: {
     type: String,
     required: false,
   },
@@ -90,7 +90,7 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
-  tiktok: {
+  tiktok_refresh_token: {
     type: String,
     required: false,
   },
