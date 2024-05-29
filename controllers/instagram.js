@@ -37,9 +37,12 @@ export const getInstagramAccessToken = async(req, res, next) => {
             headers: form.getHeaders()
         });
 
-        const user = await User.findByIdAndUpdate(req.userId, { instagram_refresh_token: result.data.access_token })
-        console.log(result);
-        const { password, ...userInfo } = user;
+        const user = await User.findByIdAndUpdate(req.userId, 
+            { instagram_refresh_token: result.data.access_token }, 
+            { new: true }
+        )
+
+        const { password, ...userInfo } = user._doc;
         res.status(200).json(userInfo);
 
     }catch(err) {
