@@ -139,6 +139,36 @@ export const getArtistData = async(req, res, next) => {
     }
 }
 
+// Get Several Artists
+export const getSeveralArtists = async(req, res, next) => {
+    try{
+        // Retrieve all artist in database
+        const users = await User.find({ isArtist: true });
+        // filter users with spotify ids
+        const ids = await filterUserIds(users);
+
+        const result = await axios.get(`https://api.spotify.com/v1/artists?ids=${ids}`,
+            {
+                headers: { "Authorization": `Bearer ${ req.access_token }`}
+            }
+        );
+        res.status(200).json(result.data.artists);
+    }catch(err) {
+        next(err);
+    }
+};
+
+function filterUserIds(users) {
+    let str = "";
+    users.forEach(user => {
+        if(user.spotify_id) {
+            str += `${user.spotify_id},`;
+        }
+    });
+
+    return str;
+}
+
 // Endpoint to get user's top tracks
 export const getUserTopTracks = async(req, res, next) => {
     try {

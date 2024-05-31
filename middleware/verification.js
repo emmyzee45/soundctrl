@@ -63,4 +63,24 @@ export const spotifyToken = async(req, res, next) => {
   }catch(err) {
     next(err);
   }
+};
+
+export const spotifyClientToken = async(req, res, next) => {
+  try {
+    const result = await axios.post(
+      `https://accounts.spotify.com/api/token`,
+      { grant_type: "client_credentials" }, 
+      {
+        headers: { 
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${
+            new Buffer.from(process.env.SPOTIFY_CLIENT_ID+":"+process.env.SPOTIFY_CLIENT_SECRET).toString('base64')
+          }`}
+      }
+    );
+      req.access_token = result.data.access_token;
+      next();
+  }catch(err) {
+    res.status(500).json(err);
+  }
 }
