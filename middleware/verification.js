@@ -39,13 +39,13 @@ export const spotifyToken = async(req, res, next) => {
   try {
     const user = await User.findById(req.userId);
     // console.log(user)
-    if(!user?.spotify) return next(createError(401, "Not authenticated"));
+    if(!user?.spotify_refresh_token) return next(createError(401, "Not authenticated"));
 
     const result = await axios.post(
       `https://accounts.spotify.com/api/token`, {
         grant_type: "refresh_token",
         client_id: process.env.SPOTIFY_CLIENT_ID,
-        refresh_token: user.spotify
+        refresh_token: user.spotify_refresh_token
       },
       { headers: 
         { 

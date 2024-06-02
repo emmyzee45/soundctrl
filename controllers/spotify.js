@@ -41,7 +41,7 @@ export const getAccessAndRefreshToken = async(req ,res, next) => {
 
         if(user) {
             user.spotify_refresh_token = getTokens.refresh_token;
-            user.spotify_id = getTokens.id;
+            user.spotify_id = getUser.id;
             await user.save();
 
             const token = jwt.sign({
@@ -51,12 +51,12 @@ export const getAccessAndRefreshToken = async(req ,res, next) => {
             }, process.env.JWT_KEY);
 
             const {password, ...info } = user._doc;
-
+            // console.log(info)
             res.status(200).json({ token, userInfo: {...info }})
         } else {
             const newUser = new User({
                 ...getUser,
-                spotify_id: getTokens.id,
+                spotify_id: getUser.id,
                 spotify_refresh_token: getTokens.refresh_token
             });
 
