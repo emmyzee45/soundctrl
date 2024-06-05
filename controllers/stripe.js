@@ -3,6 +3,7 @@ import createError from "../utils/createError.js"
 import Stripe from "stripe";
 
 // "sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83"
+// process.env.STRIPE
 const stripe = new Stripe(process.env.STRIPE);
 export const createStripeAccount = async(req, res, next) => {
     const stripe = new Stripe(process.env.STRIPE);
@@ -20,39 +21,22 @@ export const createStripeAccount = async(req, res, next) => {
                 // business_type: user.business_type || undefined
             }
 
-            // Companies and individuals requirement different parameters
-            // if(accountParams.business_type === 'company') {
-            //     accountParams = Object.assign(accountParams, {
-            //         company: {
-            //             name: user.businessName || undefined
-            //         }
-            //     })
-            // } else {
-            //     accountParams = Object.assign(accountParams, {
-            //         individual: {
-            //             first_name: user.first_name || undefined,
-            //             last_name: user.last_name || undefined,
-            //             email: user.email || undefined
-            //         }
-            //     })
-            // }
-
             const account = await stripe.accounts.create(accountParams);
             accountId = account.id;
 
-            // update account set it to manual payout
-            await stripe.accounts.update(
-                accountId,
-                {
-                    settings: {
-                        payouts: {
-                            schedule: {
-                                interval: 'manual',
-                            }
-                        }
-                    }
-                }
-            )
+            // // update account set it to manual payout
+            // await stripe.accounts.update(
+            //     accountId,
+            //     {
+            //         settings: {
+            //             payouts: {
+            //                 schedule: {
+            //                     interval: 'manual',
+            //                 }
+            //             }
+            //         }
+            //     }
+            // )
 
             // Update model and store the stripe account id in database
             user.stripe_account_id = accountId;
@@ -104,19 +88,36 @@ export const payout = async(req, res, next) => {
     try {
         const user = await User.findById(req.userId);
         
-        const balance = await stripe.balance.retrieve({
-            stripeAccount: user.stripe_account_id
-        });
+        // const balance = await stripe.balance.retrieve({
+        //     stripeAccount: user.stripe_account_id
+        // });
+
+        const balance = await stripe.balance.retrieve();
 
         const {amount, currency} = balance.available[0];
 
-        const payout = await stripe.payouts.create({
-            amount: amount,
-            currency: currency,
-            statement_descriptor: 'Transaction made by sound control'
-        }, { stripeAccount: user.stripe_account_id });
+        // const payout = await stripe.payouts.create({
+        //     amount: amount,
+        //     // method: "instant",
+        //     currency: currency,
+        //     statement_descriptor: 'Transaction made by sound control'
+        // }, { stripeAccount: user.stripe_account_id });
 
-        res.status(200).json(payout);
+        // res.status(200).json(payout);
+        if(amount < user.earnings.balance) return next(createError(400, "pending balance"));
+
+        await stripe.transfers.create({
+            amount: (user.earnings.balance * 0.8).toFixed(),
+            currency: 'usd',
+            destination: user.stripe_account_id
+        });
+
+        user.earnings.balance = 0;
+        await user.save();
+        
+        const { password, ...info } = user._doc;
+
+        res.status(200).json(info);
     }catch(err) {
         next(err)
     }
@@ -169,21 +170,22 @@ export const generateCharge = async(req, res, next) => {
       // onboarding flow): the platform creates the charge and then separately transfers the funds to the recipient.
       const charge = await stripe.charges.create({
         source: source,
-        amount: 2000,
+        amount: 4000,
         currency: "usd",
         description: "Testing",
         statement_descriptor: "Testing",
         // The `transfer_group` parameter must be a unique id for the ride; it must also match between the charge and transfer
         transfer_group: "6453635"
       });
-      const transfer = await stripe.transfers.create({
-        amount: 2000 * 0.9,
-        currency: "usd",
-        destination: artist.stripe_account_id,
-        transfer_group: "6453635"
-      })
+    //   const transfer = await stripe.transfers.create({
+    //     amount: 2000 * 0.9,
+    //     currency: "usd",
+    //     destination: artist.stripe_account_id,
+    //     transfer_group: "6453635"
+    //   })
       res.status(200);
     }catch(err) {
+        console.log(err);
         res.status(500).json(err);
     }
 }

@@ -8,6 +8,6 @@ router.post("/",[verifyToken, verifyArtist], createStripeAccount);
 router.put("/", [verifyToken, verifyArtist], completeOnboarding);
 router.get("/", [verifyToken, verifyArtist], getAccountDetails);
 router.post("/payout", [verifyToken, verifyArtist], payout);
-// router.post("/:id", [verifyToken, verifyArtist], generateCharge);
+router.post("/:id", [verifyToken, verifyArtist], generateCharge);
 
 export default router;

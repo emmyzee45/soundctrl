@@ -1,27 +1,34 @@
 import { artifactregistry } from "googleapis/build/src/apis/artifactregistry/index.js";
 import Order from "../models/Order.js";
 import User from "../models/User.js";
+import Ticket from "../models/Ticket.js";
 import Stripe from "stripe";
 
 // "sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83"
 
 export const intent = async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE);
+  const { price, type, artistId, id } = req.body;
 
-  const { price, type, artistId } = req.body;
+  let ticket;
   try {
-    const artist = await User.findOne({_id: artistId});
+    if(type == "booking") {
+      ticket = await Ticket.findById(id);
+    }
+    // const artist = await User.findOne({_id: artistId});
+    
     const paymentIntent = await stripe.paymentIntents.create({
-    amount: price * 100,
+    amount: type === "subscription" ? 3 * 100 : ticket.price * 100,
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,
     },
-    transfer_data: {
-      amount: price * 100 * 0.8,
-      destination: artist.stripe_account_id
+    transfer_group: artistId,
+    // transfer_data: {
+    //   amount: price * 100 * 0.8,
+    //   destination: artist.stripe_account_id
       
-    }
+    // }
     // await stripe.
   });
   
@@ -131,7 +138,7 @@ export const confirm = async (req, res, next) => {
       $inc: order.type == "subscription" ? 
       { "earnings.subscriptions": order.price } : 
       { "earnings.bookings": order.price },
-      $inc: { "earnings.total": order.price }
+      $inc: { "earnings.total": order.price, "earnings.balance": order.price }
     });
     await User.findByIdAndUpdate(order.buyerId, {
       $addToSet: { subscribers: order.sellerId },

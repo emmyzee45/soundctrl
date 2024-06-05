@@ -122,7 +122,11 @@ const userSchema = new Schema({
     total: {
       type: Number,
       default: 0
-    }
+    },
+    balance: {
+      type: Number,
+      default: 0
+    },
   }
 
 },{
