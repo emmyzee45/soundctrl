@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Emails from "../models/Emails.js";
 import User from "../models/User.js";
 import createError from "../utils/createError.js";
@@ -77,3 +78,35 @@ export const newsSubscription = async(req, res) => {
   }
 }
 
+export const addFavorite = async(req, res, next) => {
+  // if(!mongoose.isValidObjectId(req.params.id)) {
+  //   console.log("Invalid id ");
+  //   return next(createError(400, "Bad request"))
+  // }
+  // try {
+  //   const favorite = await User.findByIdAndUpdate(req.params.id, 
+  //     {
+  //     $addToSet: { favorite: req.body.artistId },
+  //     $pull: { hated: req.body.artistId }
+  //   }, { new: true });
+  //   console.log(favorite)
+  //   res.status(200).json(favorite);
+  // }catch(err){
+  //   next(err);
+  // }
+}
+
+export const addHated = async(req, res,next) => {
+  // if(!mongoose.Types.ObjectId.isValid(req.params.id)) return next(createError(400, "Invalid id"));
+
+  // try {
+  //   const hated = await User.findByIdAndUpdate(req.params.id, 
+  //     { $addToSet: { hated: req.body.artistId }, $pull: { favorite: req.body.artistId } }, { new: true }
+  //   );
+  //   console.log(hated)
+  //   res.status(200).json(hated);
+  // }catch(err) {
+  //   console.log(err);
+  //   next(err);
+  // }
+}

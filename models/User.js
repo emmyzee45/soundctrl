@@ -127,6 +127,12 @@ const userSchema = new Schema({
       type: Number,
       default: 0
     },
+  },
+  favorite: {
+    type: Array
+  },
+  hated: {
+    type: Array
   }
 
 },{
