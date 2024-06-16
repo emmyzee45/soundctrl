@@ -38,6 +38,7 @@ app.use(cors({ origin:
     "https://dev.fans.soundctrl.xyz",
     "https://dev.artist.soundctrl.xyz",
     "https://www.dev.fans.soundctrl.xyz",
+  "https://www.artist.soundctrl.xyz",
   "https://www.dev.artist.soundctrl.xyz",
   "http://localhost:3000",
 ], credentials: true }));
