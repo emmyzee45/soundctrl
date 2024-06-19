@@ -35,6 +35,7 @@ const connect = async () => {
 app.use(cors({ origin: 
   [
     "https://www.soundctrl.xyz",
+    "http://localhost:5173",
     "https://dev.fans.soundctrl.xyz",
     "https://dev.artist.soundctrl.xyz",
     "https://www.dev.fans.soundctrl.xyz",

@@ -6,7 +6,7 @@ import createError from "../utils/createError.js";
 export const deleteUser = async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
-  if (req.userId !== user._id.toString()) {
+  if (req.userId !== user._id.toString() && !req.isAdmin) {
     return next(createError(403, "You can delete only your account!"));
   }
   await User.findByIdAndDelete(req.params.id);
@@ -21,7 +21,9 @@ export const getSingleUser = async (req, res, next) => {
 
 export const getAllArtist = async (req, res, next) => {
   try {
-    const user = await User.find({isArtist: true });
+    const user = await User.find({isArtist: true })
+    .sort({points: -1})
+    .select("-password -subscribers -spotify_refresh_token -google_refresh_token -twitter_refresh_token");
     res.status(200).json(user);
   }catch(err) {
     next(err)
@@ -30,7 +32,9 @@ export const getAllArtist = async (req, res, next) => {
 
 export const getAllFans = async (req, res, next) => {
   try {
-    const user = await User.find({isArtist: false});
+    const user = await User.find({isArtist: false})
+    .sort({points: -1})
+    .select("-password -subscribedUsers -spotify_refresh_token -google_refresh_token -twitter_refresh_token");
     res.status(200).send(user);
   }catch(err) {
     next(err)

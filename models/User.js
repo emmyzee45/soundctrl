@@ -110,6 +110,14 @@ const userSchema = new Schema({
     type: Boolean,
     default: false
   },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   earnings: {
     subscriptions: {
       type: Number,

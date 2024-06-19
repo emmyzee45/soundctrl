@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/news", newsSubscription)
 router.post("/:id", verifyToken, subscribe);
 router.put("/:id", verifyToken, updateUser);
-router.delete("/:id", verifyToken, deleteUser);
+router.delete("/:id",verifyToken, deleteUser);
 router.get("/artist", getAllArtist);
 router.get("/fans", getAllFans);
 // router.put("/favorite/:id", verifyToken, addFavorite);

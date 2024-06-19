@@ -15,8 +15,9 @@ export const intent = async (req, res, next) => {
     if(type == "booking") {
       ticket = await Ticket.findById(id);
     }
-    // const artist = await User.findOne({_id: artistId});
-    
+   
+    const artist = await User.findOne({_id: artistId});
+   
     const paymentIntent = await stripe.paymentIntents.create({
     amount: type === "subscription" ? 3 * 100 : ticket.price * 100,
     currency: "usd",
@@ -32,16 +33,38 @@ export const intent = async (req, res, next) => {
     // await stripe.
   });
   
-  const newOrder = new Order({
-    type: type,
-    buyerId: req.userId,
-    sellerId: artistId,
-    price: price,
-    payment_intent: paymentIntent.id,
-  });
-  
-  await newOrder.save();
-  
+  // const newOrder = new Order({
+  //   type: type,
+  //   buyerId: req.userId,
+  //   sellerId: artistId,
+  //   price: price,
+  //   payment_intent: paymentIntent.id,
+  // });
+
+  // await newOrder.save();
+
+  // const sessions = await stripe.checkout.sessions.create({
+  //   line_items: [
+  //     {
+  //       price_data: {
+  //         product_data: {
+  //           name: type === "subscription" ? artist.username : "Book Time",
+  //           images: [type === "subscription" ? artist.avatarImg : ""],
+  //           description: "",
+  //           metadata: {
+  //             id: newOrder._id
+  //           }
+  //         },
+  //         unit_amount: type === "subscription" ? 3 * 100 : ticket.price * 100,
+  //         currency: "usd"
+  //       },
+    
+  //       quality: 1,
+  //     }
+  //   ],
+  //   mode: "payment"
+  // }); 
+  // console.log(sessions)
   res.status(200).send({
     clientSecret: paymentIntent.client_secret,
     // result: "success"
