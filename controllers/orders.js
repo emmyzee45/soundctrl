@@ -17,64 +17,100 @@ export const intent = async (req, res, next) => {
     }
    
     const artist = await User.findOne({_id: artistId});
-   
-    const paymentIntent = await stripe.paymentIntents.create({
-    amount: type === "subscription" ? 3 * 100 : ticket.price * 100,
-    currency: "usd",
-    automatic_payment_methods: {
-      enabled: true,
-    },
-    transfer_group: artistId,
-    // transfer_data: {
-    //   amount: price * 100 * 0.8,
-    //   destination: artist.stripe_account_id
-      
-    // }
-    // await stripe.
-  });
   
-  // const newOrder = new Order({
-  //   type: type,
-  //   buyerId: req.userId,
-  //   sellerId: artistId,
-  //   price: price,
-  //   payment_intent: paymentIntent.id,
-  // });
-
-  // await newOrder.save();
-
-  // const sessions = await stripe.checkout.sessions.create({
-  //   line_items: [
-  //     {
-  //       price_data: {
-  //         product_data: {
-  //           name: type === "subscription" ? artist.username : "Book Time",
-  //           images: [type === "subscription" ? artist.avatarImg : ""],
-  //           description: "",
-  //           metadata: {
-  //             id: newOrder._id
-  //           }
-  //         },
-  //         unit_amount: type === "subscription" ? 3 * 100 : ticket.price * 100,
-  //         currency: "usd"
-  //       },
-    
-  //       quality: 1,
-  //     }
-  //   ],
-  //   mode: "payment"
-  // }); 
-  // console.log(sessions)
-  res.status(200).send({
-    clientSecret: paymentIntent.client_secret,
-    // result: "success"
+  const newOrder = new Order({
+    type: type,
+    buyerId: req.userId,
+    sellerId: artistId,
+    price: price,
+    // payment_intent: paymentIntent.id,
   });
+
+  await newOrder.save();
+
+  const sessions = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price_data: {
+          product_data: {
+            name: type === "subscription" ? artist.username : "Book Time",
+            images: [type === "subscription" ? artist.avatarImg : "https://firebasestorage.googleapis.com/v0/b/components-93c13.appspot.com/o/ticket-3.png?alt=media&token=9260f608-19a6-495f-bab3-ea61bb64ce7e"],
+            // description: "",
+            metadata: {
+              id: newOrder._id
+            }
+          },
+          unit_amount: type === "subscription" ? 3 * 100 : ticket.price * 100,
+          currency: "usd"
+        },
+    
+        quantity: 1,
+      }
+    ],
+    mode: "payment",
+    metadata: {
+      orderId: newOrder._id,
+      artistId
+    },
+    success_url: `${process.env.FAN_PUBLIC_DOMAIN}/redirect?orderId=${newOrder._id}&type=${type}&ticketId=${id}&success=true`,
+    cancel_url: `${process.env.FAN_PUBLIC_DOMAIN}/redirect?type=${type}&ticketId=${id}&cancel=true`
+  }); 
+
+  res.status(200).json(sessions.url);
 
 }catch(err) {
   console.log(err)
   next(err)
 }
 };
+
+// export const intent = async (req, res, next) => {
+//   const stripe = new Stripe(process.env.STRIPE);
+//   const { price, type, artistId, id } = req.body;
+
+//   let ticket;
+//   try {
+//     if(type == "booking") {
+//       ticket = await Ticket.findById(id);
+//     }
+   
+//     const artist = await User.findOne({_id: artistId});
+   
+//     const paymentIntent = await stripe.paymentIntents.create({
+//     amount: type === "subscription" ? 3 * 100 : ticket.price * 100,
+//     currency: "usd",
+//     automatic_payment_methods: {
+//       enabled: true,
+//     },
+//     transfer_group: artistId,
+//     // transfer_data: {
+//     //   amount: price * 100 * 0.8,
+//     //   destination: artist.stripe_account_id
+      
+//     // }
+//     // await stripe.
+//   });
+  
+//   const newOrder = new Order({
+//     type: type,
+//     buyerId: req.userId,
+//     sellerId: artistId,
+//     price: price,
+//     payment_intent: paymentIntent.id,
+//   });
+
+//   await newOrder.save();
+
+//   res.status(200).send({
+//     clientSecret: paymentIntent.client_secret,
+//     // result: "success"
+//   });
+
+// }catch(err) {
+//   console.log(err)
+//   next(err)
+// }
+// };
 
 export const transfer = async(req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE);
@@ -144,12 +180,11 @@ export const bookingEarning = async(req, res) => {
     next(err)
   }
 }
+
 export const confirm = async (req, res, next) => {
   try {
-    const order = await Order.findOneAndUpdate(
-      {
-        payment_intent: req.body.payment_intent,
-      },
+    const order = await Order.findByIdAndUpdate(
+      req.body.orderId,
       {
         $set: {
           isCompleted: true,
@@ -173,3 +208,33 @@ export const confirm = async (req, res, next) => {
     next(err);
   }
 };
+
+// export const confirm = async (req, res, next) => {
+//   try {
+//     const order = await Order.findOneAndUpdate(
+//       {
+//         payment_intent: req.body.payment_intent,
+//       },
+//       {
+//         $set: {
+//           isCompleted: true,
+//         },
+//       }
+//     );
+//     await User.findByIdAndUpdate(order.sellerId, {
+//       $addToSet: { subscribedUsers: order.buyerId },
+//       $inc: order.type == "subscription" ? 
+//       { "earnings.subscriptions": order.price } : 
+//       { "earnings.bookings": order.price },
+//       $inc: { "earnings.total": order.price, "earnings.balance": order.price }
+//     });
+//     await User.findByIdAndUpdate(order.buyerId, {
+//       $addToSet: { subscribers: order.sellerId },
+//       $inc: {points: 10 }
+//     });
+
+//     res.status(200).send(order);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
