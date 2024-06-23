@@ -40,6 +40,9 @@ export const getAccessAndRefreshToken = async(req ,res, next) => {
         const user = await User.findOne({email: getUser.email });
 
         if(user) {
+            if(!user.spotify_id) {
+                user.points = user.points + 300
+            }
             user.spotify_refresh_token = getTokens.refresh_token;
             user.spotify_id = getUser.id;
             await user.save();
@@ -56,6 +59,7 @@ export const getAccessAndRefreshToken = async(req ,res, next) => {
         } else {
             const newUser = new User({
                 ...getUser,
+                points: 300,
                 spotify_id: getUser.id,
                 spotify_refresh_token: getTokens.refresh_token
             });

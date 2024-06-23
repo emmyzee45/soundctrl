@@ -7,7 +7,7 @@ import Stripe from "stripe";
 // "sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83"
 
 export const intent = async (req, res, next) => {
-  const stripe = new Stripe(process.env.STRIPE);
+  const stripe = new Stripe("sk_test_51OYl3MHuxvfPN8eLlMGK4S72J9F16ieEZuxUStXliKDjyr8grX8WxU7P1CYaRhiQ8fD2dNGCIma9jr87tvG353N100CuTazu83");
   const { price, type, artistId, id } = req.body;
 
   let ticket;
@@ -198,12 +198,12 @@ export const confirm = async (req, res, next) => {
       { "earnings.bookings": order.price },
       $inc: { "earnings.total": order.price, "earnings.balance": order.price }
     });
-    await User.findByIdAndUpdate(order.buyerId, {
+    const user = await User.findByIdAndUpdate(order.buyerId, {
       $addToSet: { subscribers: order.sellerId },
       $inc: {points: 10 }
-    });
+    }, { new: true });
 
-    res.status(200).send(order);
+    res.status(200).send({user, order});
   } catch (err) {
     next(err);
   }
